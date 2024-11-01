@@ -1,0 +1,35 @@
+# Copyright (C) 2021 tobook
+# This file is distributed under the GPLv2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: tobook Hotel Booking Engine 1.2\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/tbengine\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2021-08-09T22:46:44+02:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.5.0\n"
+"X-Domain: tobook-hotel-booking-engine\n"
+
+#. Plugin Name of the plugin
+msgid "tobook Hotel Booking Engine"
+msgstr "tobook Hotel Booking Engine"
+
+#. Plugin URI of the plugin
+msgid "https://www.tobook.com/en/WordPressEngine"
+msgstr "https://www.tobook.com/tr/WordPressEngine"
+
+#. Description of the plugin
+msgid "**FREE** tobook WordPress Hotel Booking Engine - drive price-parity beating commission-free bookings through your website"
+msgstr "**ÜCRETSİZ** tobook WP - Web siteniz üzerinden komisyonsuz rezervasyonları geride bırakarak fiyat paritesini artırın"
+
+#. Author of the plugin
+msgid "tobook"
+msgstr "tobook"
+
+#. Author URI of the plugin
+msgid "https://www.tobook.com/"
+msgstr "https://www.tobook.com/tr/"

@@ -1,0 +1,506 @@
+<div
+    class="tb-modal"
+    id="modalConfirmation"
+>
+    <div class="tb-modal-content tb-cart-font">
+        <div class="tb-modal-header">
+            <h5
+                class="tb-modal-header-title tb-text-muted tb-text-em"
+                id="modalConfirmationTitle"
+            >Title</h5>
+        </div>
+        <div class="tb-modal-body tb-text-medium" id="modalConfirmationMessage">Message</div>
+        <div class="tb-modal-footer">
+            <button
+                type="button"
+                class="tb-default-button tb-modal-button-small"
+                id="modalConfirmationCancel"
+            >Cancel</button>
+            <button
+                type="button"
+                class="tb-action-button tb-modal-ok tb-action-button-large"
+                id="modalConfirmationAction"
+            >OK</button>
+        </div>
+    </div>
+</div>
+<div
+    id="signInOutVue"
+    class="container-fluid tb-navbar-plain tb-cart-font"
+    v-cloak
+>
+    <div class="row">
+        <div class="col-5 tb-col-padding-slim">
+            <button
+                type="button"
+                class="dropbutton tb-button-full-capped-small tb-add-button tb-add-button-small tb-button-enabled"
+                v-on:click="VueShowCurrencyMenu()"
+            >
+                {{ OfferList.UserCurrencyLabel }}&nbsp;&nbsp;<span
+                class="fa fa-caret-down dropbutton"
+            ></span></button>
+            <div
+                id="currencyMenu"
+                class="dropdown-content tb-dropdown"
+                aria-labelledby="dropdownMenuButton"
+            >
+                <template v-for="currency in OfferList.Currencies">
+                    <a
+                        class="tb-dropdown-item"
+                        v-on:click="VueChangeCurrency(currency.CurrencyID, ((currency.Symbol != '') ? currency.Symbol : currency.CurrencyShortEn))"
+                        v-bind:class="(OfferList.CurrencyID == currency.CurrencyID) ? 'tb-text-muted' : 'tb-text-medium'"
+                    >{{ currency.CurrencyShortEn }}</a>
+                    <div
+                        class="tb-dropdown-divider"
+                    ></div>
+                </template>
+            </div>
+        </div>
+        <div class="col-7 tb-col-padding-slim tb-right">
+            <button
+                type="button"
+                class="dropbutton tb-button-full-capped tb-add-button tb-add-button-small tb-button-enabled"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                data-flip="false"
+                v-on:click="VueShowSignInMenu()"
+            ><img
+                v-if="ViewModel.SignedIn"
+                v-bind:src="('https://www.tobook.com/' + ViewModel.ResHolder.OwningCustomer.ProfilePicturePath)"
+                class="fab-img image-cropper dropbutton"
+            /><span
+                v-if="!ViewModel.SignedIn"
+                class="fa fa-bars dropbutton"
+            ></span>&nbsp;&nbsp;<span
+                class="dropbutton"
+            >{{ ResHolder.SignInOutLabel }}</span>&nbsp;&nbsp;<span
+                class="fa fa-caret-down dropbutton"
+            ></span></button>
+            <div
+                v-if="ResHolder.app"
+                id="signInMenu"
+                class="dropdown-content dropdown-right tb-dropdown-login tb-left"
+                aria-labelledby="dropdownMenuButton"
+            >
+                <a
+                    v-if="!ViewModel.SignedIn"
+                    class="tb-dropdown-item tb-text-muted tb-text-em"
+                    v-on:click="VueSignInOut()"
+                >{{ ResHolder.app.Text('SignIn', 'Sign In') }}</a>
+                <div
+                    v-if="!ViewModel.SignedIn"
+                    class="tb-dropdown-divider"
+                ></div>
+                <a
+                    v-if="!ViewModel.SignedIn"
+                    href="https://www.tobook.com/CustomerArea/index.html"
+                    class="tb-dropdown-item tb-text-muted"
+                >{{ ResHolder.app.Text('GoToCustomerArea', 'Go To Customer Area') }}</a>
+                <a
+                    v-if="ViewModel.SignedIn"
+                    class="tb-dropdown-item tb-text-muted tb-text-smaller"
+                >
+                    <span>{{ ResHolder.SignInStatusLabel }}</span>&nbsp;<span
+                        class="tb-text-em"
+                    >{{ ResHolder.SignInDisplayName }}</span>
+                </a>
+                <div
+                    v-if="ViewModel.SignedIn"
+                    class="tb-dropdown-divider"
+                ></div>
+                <a
+                    v-if="ViewModel.SignedIn"
+                    href="https://www.tobook.com/CustomerArea/index.html"
+                    class="tb-dropdown-item tb-text-muted"
+                >{{ ResHolder.app.Text('ViewProfile', 'View Profile') }}</a>
+                <div
+                    v-if="ViewModel.SignedIn"
+                    class="tb-dropdown-divider"
+                ></div>
+                <a
+                    v-if="ViewModel.SignedIn"
+                    class="tb-dropdown-item tb-text-muted tb-text-em"
+                    v-on:click="VueSignInOut()"
+                >{{ ResHolder.app.Text('SignOut', 'Sign Out') }}</a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div
+            class="col-12 col-sm-6 tb-col-padding-slim tb-text-muted tb-name-large"
+        ><span v-if="OfferList.ml">
+            {{ OfferList.app.Text('CheckIn', 'Check-in') }}
+        </span>: {{ OfferList.ArrDisplay }}</div>
+        <div
+            class="col-12 col-sm-6 tb-col-padding-slim tb-text-muted tb-name-large tb-right"
+        ><span v-if="OfferList.ml">
+            {{ OfferList.app.Text('CheckOut', 'Check-out') }}
+        </span>: {{ OfferList.DepDisplay }}</div>
+    </div>
+</div>
+<div style="height: 10px"></div>
+<div
+    id="cartSummary"
+    class="tb-cart-summary tb-cart-font"
+    v-bind:class="OfferList.Cart.IsEmpty ? 'tb-cart-summary-hide' : 'tb-cart-summary-show'"
+    v-cloak
+>
+    <div class="container-fluid">
+        <template v-for="offer in OfferList.Cart.SelectedOffers">
+            <div class="row tb-margin-auto">
+                <div class="col-11 text-truncate tb-col-padding-slimmer">
+                    {{ offer.NumRooms }}
+                    x
+                    <a
+                        class="tb-link-explicit"
+                        v-on:click="VueScrollToOffer(offer, $event)"
+                    >{{ offer.Offer.RoomTypeName }}</a>
+                </div>
+                <div class="col-1 tb-right tb-col-padding-slim">
+                    <a
+                        class="tb-link-large"
+                        v-on:click="VueRemoveFromCart(offer)"
+                    >
+                        <span class="fa fa-times-circle tb-link-delete"></span>
+                    </a>
+                </div>
+            </div>
+            <div class="tb-cart-summary-divider-slim"></div>
+        </template>
+        <div class="row tb-margin-auto">
+            <div class="col-8 tb-col-padding-slimmer">
+                <span
+                    class="tb-text-em"
+                >{{ OfferList.Cart.TotalRooms }}</span>
+                <span v-if="OfferList.ml">{{ OfferList.ml.Text('RoomsSelected', 'RoomsSelected') }}</span>
+            </div>
+            <div class="col-4 tb-right tb-col-padding-slim">
+                <span
+                    class="tb-text-em"
+                >{{ OfferList.Cart.TotalInclusiveDisplay }}</span>
+            </div>
+        </div>
+    </div>
+    <form
+        name="MakeBooking"
+        method="POST"
+        v-bind:action="OfferList.MakeBookingPath"
+        id="MakeBooking"
+    >
+        <input type="hidden" name="LangID"          v-bind:value="OfferList.LangID" />
+        <input type="hidden" name="IsViaOTA"        value="0" />
+        <input type="hidden" name="IsEngineRequest" value="1" />
+        <input type="hidden" name="Cart"            value="Cart" id="CartData" />
+    </form>
+</div>
+<div
+    class="container-fluid tb-cart-font"
+/>
+    <div class="row tb-margin-auto">
+        <div
+            class="col-12 tb-col-padding-none"
+            id="offerListVue"
+            style="display: none"
+            v-cloak
+        >
+            <div
+                class="row"
+                v-if="OfferList.Cart.ListHasWalkIns"
+            >
+                <div class="col-12">
+                    <div class="row">
+                        <div class="col-12"><div style="height: 10px;"></div></div>
+                        <div class="col-12 tb-col-padding-none">
+                            <div class="tb-card">
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div
+                                            class="col-12 tb-text-alert"
+                                        >
+                                            {{ OfferList.ml.Text('WalkInDiscountsAvailable', 'walk in discounts alert') }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div
+                class="row"
+                v-for="roomType in OfferList.DisplayRoomTypes"
+                v-if="(roomType.IsInstantBookable || (!OfferList.HasInstantBookableRooms))"
+            >
+                <div class="col-12">
+                    <div
+                        class="row"
+                        v-for="offer in roomType.Offers"
+                        v-if="(offer.CanMakeBooking || (!OfferList.HasInstantBookableRooms))"
+                    >
+                        <div class="col-12"><div style="height: 10px;"></div></div>
+                        <div
+                            class="col-12 tb-col-padding-none"
+                            v-bind:id="'list-r' + offer.Offer.RoomTypeID + '-o' + offer.Offer.OfferTypeID  + '-m' + offer.Offer.MaxPersons"
+                        >
+                            <div
+                                class="tb-card"
+                                v-bind:class="{ 'tb-offer-selected': offer.IsInCart }"
+                            >
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-12 col-lg-3" style="background-color: whitesmoke">
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <span
+                                                        class="tb-name"
+                                                    >{{ roomType.RoomTypeName }}</span>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-12 tb-text-muted tb-card-info">
+                                                    <span><img
+                                                        v-bind:src="roomType.PersonsNormalIcon"
+                                                        v-bind:width="roomType.PersonsNormalIconWidth"
+                                                        height="12"
+                                                        class="tb-nudge-up"
+                                                    /></span>
+                                                    <span>{{ roomType.PersonsNormal }}</span>
+                                                    <span>{{ OfferList.ml.Text('Persons', 'Persons') }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-lg-5">
+                                            <div class="row">
+                                                <div class="col-auto tb-text-muted tb-text-em tb-col-padding-slim">
+                                                    <div class="tb-card-icon-min">
+                                                        <span
+                                                            class="fa fa-tags"
+                                                        ></span>
+                                                    </div>
+                                                </div>
+                                                <div class="col tb-text-muted tb-col-padding-slim">
+                                                    <span class="tb-text-em">{{ offer.OfferTypeName }}</span>
+                                                    <span
+                                                        class="tb-city-tax-display"
+                                                        v-if="offer.HasCityTax"
+                                                    >
+                                                        (<span>{{ OfferList.ml.Text('Inclusive', 'inclusive') }}</span>
+                                                        <span ml="CityTax">{{ OfferList.ml.Text('CityTax', 'city tax') }}</span>)
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div
+                                                class="row"
+                                                v-if="offer.WithLastMinute"
+                                            >
+                                                <div class="col-auto tb-col-padding-slim-all">
+                                                    <div class="tb-card-icon-min"></div>
+                                                </div>
+                                                <div class="col tb-col-padding-slim-all">
+                                                    <span
+                                                        class="tb-text-lastminute-price"
+                                                    >{{ offer.LastMinuteDisplay }}</span>
+                                                    <span
+                                                        class="tb-text-lastminute"
+                                                    ><span>{{ OfferList.ml.Text('LastMinuteSaving', 'Last Minute Saving') }}</span>!</span>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-auto tb-col-padding-slim">
+                                                    <div class="tb-card-icon-min"></div>
+                                                </div>
+                                                <div class="col tb-text-em tb-col-padding-slim tb-main-price">
+                                                    <span>{{ offer.NumRoomsDisplay }}</span>
+                                                    <span
+                                                        v-if="((offer.Offer.NumDiscountDays > 0) && (OfferList.Cart.AllowDiscounts))"
+                                                        class="tb-text-ok"
+                                                    >{{ offer.DiscountInclusiveDisplay }}</span>
+                                                    <span
+                                                        v-if="!((offer.Offer.NumDiscountDays > 0) && (OfferList.Cart.AllowDiscounts)) && (offer.Offer.PriceInclusive > 0)"
+                                                    >{{ offer.PriceInclusiveDisplay }}</span>
+                                                    <span
+                                                        v-if="!((offer.Offer.NumDiscountDays > 0) && (OfferList.Cart.AllowDiscounts)) && (offer.Offer.PriceInclusive == 0)"
+                                                        class="tb-text-warning"
+                                                    >{{ OfferList.app.Text('NA', 'N/A') }}</span>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-auto tb-col-padding-slim">
+                                                    <div class="tb-card-icon-min">
+                                                        <span
+                                                            v-bind:class="{ 'tb-icon-alert': offer.IsNonRefundable, 'tb-icon-ok': offer.IsCancellable }"
+                                                        ><span
+                                                            class="fa"
+                                                            v-bind:class="{ 'fa-credit-card': offer.IsNonRefundable, 'fa-check': offer.IsCancellable }"
+                                                        ></span></span>
+                                                    </div>
+                                                </div>
+                                                <div class="col tb-col-padding-slim">
+                                                    <span
+                                                        v-bind:class="{ 'tb-text-alert': offer.IsNonRefundable, 'tb-text-ok': offer.IsCancellable }"
+                                                    >{{ offer.PaymentScheme }}</span>
+                                                    <span
+                                                        v-if="((offer.Offer.NumDiscountDays > 0) && (!OfferList.Cart.AllowDiscounts))"
+                                                        class="tb-text-muted tb-text-smaller"
+                                                    >
+                                                        - (<span>{{ OfferList.ml.Text('DiscountAvailable', 'Discount Available') }}</span>)
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div
+                                                v-if="(offer.Offer.MaxPersons != 0)"
+                                                class="row"
+                                            >
+                                                <div class="col-auto tb-col-padding-slim">
+                                                    <div class="tb-card-icon-min">
+                                                        <img
+                                                            v-bind:src="offer.NumPersonsIcon"
+                                                            v-bind:width="offer.NumPersonsIconWidth"
+                                                            height="12"
+                                                            class="tb-nudge-up-small"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div class="col tb-text-muted tb-col-padding-slim">
+                                                    {{ offer.UsageReductionName }}
+                                                </div>
+                                            </div>
+                                            <div
+                                                v-if="((offer.Offer.NumDiscountDays > 0) && (OfferList.Cart.AllowDiscounts))"
+                                                class="row"
+                                            >
+                                                <div class="col-auto tb-col-padding-slim">
+                                                    <div class="tb-card-icon-min"></div>
+                                                </div>
+                                                <div class="col tb-text-muted tb-col-padding-slim">
+                                                    <span>{{ OfferList.ml.Text('Save', 'Save') }}</span>
+                                                    <span
+                                                        class="tb-text-em tb-text-ok"
+                                                    >{{ offer.DiscountAmountDisplay }}</span> -
+                                                    <span class="tb-text-smaller">
+                                                        (<span>{{ OfferList.ml.Text('PublicPriceWas', 'Public price was') }}</span>:&nbsp;<span
+                                                            class="tb-text-warning"
+                                                        >{{ offer.PriceInclusiveDisplay }}</span>)
+                                                    <span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-lg-4 d-flex flex-column" style="background-color: whitesmoke">
+                                            <div class="row d-lg-none">
+                                                <div class="col-12"><div style="height: 4px"></div></div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-2 tb-col-padding-right-slimmer">
+                                                    <button
+                                                        type="button"
+                                                        class="tb-button-full tb-remove-button"
+                                                        v-bind:class="{ 'tb-button-enabled': offer.IsInCart, 'tb-button-disabled': offer.NotInCart }"
+                                                        v-on:click="VueRemoveFromCart(offer)"
+                                                    ><span class="fa fa-remove"></span></button>
+                                                </div>
+                                                <div class="col-10 tb-col-padding-none dropdown">
+                                                    <button
+                                                        type="button"
+                                                        class="dropbutton tb-button-full tb-add-button"
+                                                        v-bind:class="{ 'tb-button-enabled': !offer.CannotBookRooms, 'tb-button-disabled': offer.CannotBookRooms }"
+                                                        v-bind:disabled="offer.CannotBookRooms"
+                                                        data-toggle="dropdown"
+                                                        aria-haspopup="true"
+                                                        aria-expanded="false"
+                                                        data-flip="false"
+                                                        v-on:click="VueShowRoomOffers(offer.InfoID)"
+                                                    ><span class="fa fa-shopping-cart dropbutton"></span>&nbsp;&nbsp;<span
+                                                        class="dropbutton"
+                                                    >{{ OfferList.ml.Text('AddRooms', 'Add Rooms') }}</span>&nbsp;&nbsp;<span class="fa fa-caret-down dropbutton"></span>
+                                                    </button>
+                                                    <div
+                                                        v-bind:id="offer.InfoID"
+                                                        class="dropdown-content dropdown-right tb-dropdown"
+                                                        aria-labelledby="dropdownMenuButton"
+                                                    >
+                                                        <template v-for="roomOffer in offer.CurrentOffers">
+                                                            <a
+                                                                v-on:click="VueAddToCart(offer, roomOffer.NumRequested, $event)"
+                                                                class="tb-dropdown-item"
+                                                            ><span
+                                                                v-bind:class="(offer.NumRooms == roomOffer.NumRequested) ? 'tb-text-ok' : 'tb-text-ghost'"
+                                                            ><span
+                                                                class="fa fa-check"
+                                                            ></span></span>&nbsp;&nbsp;<span
+                                                                class="tb-text-muted"
+                                                            >{{ roomOffer.Description }}</span>
+                                                            </a>
+                                                            <div
+                                                                v-if="roomOffer.IsNotLast"
+                                                                class="tb-dropdown-divider"
+                                                            ></div>
+                                                        </template>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row d-none d-lg-block flex-fill">
+                                                <div class="col d-flex flex-column"><div class="h-100"></div></div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-12 tb-col-padding-none">
+                                                    <a
+                                                        class="tb-button-full tb-book-button"
+                                                        v-bind:href="(offer.CannotBookRooms || (!OfferList.Cart.IsEmpty)) ? '#' : offer.MakeBookingHref"
+                                                        role="button"
+                                                        v-bind:class="{ 'tb-button-enabled': !offer.CannotBookRooms, 'tb-button-disabled': offer.CannotBookRooms }"
+                                                        v-bind:disabled="offer.CannotBookRooms"
+                                                        v-on:click="VueBookNow(offer, $event)"
+                                                        rel="nofollow"
+                                                    ><span class="fa fa-briefcase"></span>&nbsp;&nbsp;<span
+                                                        class="tb-text-em"
+                                                    >{{ offer.BookingActionDirect }}</span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                   </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12"><div style="height: 10px;"></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div
+    class="container-fluid tb-cart-font"
+>
+    <div
+        class="col-12 tb-col-padding-none"
+        id="showMoreVue"
+        v-cloak
+    >
+        <div class="row">
+            <div class="col-12 tb-col-padding-none">
+                <button
+                    type="button"
+                    class="tb-button-full tb-add-button"
+                    v-if="OfferList.NumExtraOffers > 0"
+                    v-on:click="VueToggleRoomTypeDisplayMode()"
+                >
+                    <span
+                        v-if="!OfferList.ShowAllOffers"
+                    >
+                        <span>{{ OfferList.ml.Text('ShowMoreOffers', 'Show More Offers') }}</span>
+                        ({{ OfferList.NumExtraOffers }})
+                        &nbsp;&nbsp;
+                        <span class="fa fa-caret-down"></span>
+                    </span>
+                    <span v-if="OfferList.ShowAllOffers">
+                        <span>{{ OfferList.ml.Text('HideExtraOffers', 'Hide Extra Offers') }}</span>
+                        &nbsp;&nbsp;
+                        <span class="fa fa-caret-up"></span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

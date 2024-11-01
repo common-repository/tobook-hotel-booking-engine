@@ -1,0 +1,721 @@
+<div
+    class="tb-modal"
+    id="modalAlert"
+>
+    <div class="tb-modal-content tb-cart-font">
+        <div class="tb-modal-header">
+            <h5
+                class="tb-modal-header-title tb-text-muted tb-text-em"
+                id="modalAlertTitle"
+            >Title</h5>
+        </div>
+        <div class="tb-modal-body tb-text-medium" id="modalAlertMessage">Message</div>
+        <div class="tb-modal-footer">
+            <button
+                type="button"
+                class="tb-action-button tb-modal-ok"
+                id="modalAlertAction"
+            >OK</button>
+        </div>
+    </div>
+</div>
+<div
+    class="container-fluid tb-navbar-plain tb-cart-font"
+    id="cartVue"
+    v-cloak
+>
+    <div
+        class="row"
+    >
+        <div
+            id="NavHeader"
+            class="col-12 col-md-8 tb-col-padding-slimmer tb-text-muted tb-navbar-header-main tb-text-em"
+        >
+            {{ Cart.ActionStep }}
+        </div>
+        <div
+            class="col-12 col-md-4 my-auto tb-col-padding-slimmer tb-right"
+        >
+            <button
+                type="button"
+                class="dropbutton tb-button-full-capped tb-add-button tb-add-button-small tb-button-enabled"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                data-flip="false"
+                v-on:click="VueShowSignInMenu()"
+            ><img
+                v-if="ViewModel.SignedIn"
+                v-bind:src="('https://www.tobook.com/' + ViewModel.ResHolder.OwningCustomer.ProfilePicturePath)"
+                class="fab-img image-cropper dropbutton"
+            /><span
+                v-if="!ViewModel.SignedIn"
+                class="fa fa-bars dropbutton"
+            ></span>&nbsp;&nbsp;<span
+                class="dropbutton"
+            >{{ ResHolder.SignInOutLabel }}</span>&nbsp;&nbsp;<span
+                class="fa fa-caret-down dropbutton"
+            ></span></button>
+            <div
+                v-if="ResHolder.app"
+                id="signInMenu"
+                class="dropdown-content dropdown-right tb-dropdown-login tb-left"
+                aria-labelledby="dropdownMenuButton"
+            >
+                <a
+                    v-if="!ViewModel.SignedIn"
+                    class="tb-dropdown-item tb-text-muted tb-text-em"
+                    v-on:click="VueSignInOut()"
+                >{{ ResHolder.app.Text('SignIn', 'Sign In') }}</a>
+                <div
+                    v-if="!ViewModel.SignedIn"
+                    class="tb-dropdown-divider"
+                ></div>
+                <a
+                    v-if="!ViewModel.SignedIn"
+                    href="https://www.tobook.com/CustomerArea/index.html"
+                    class="tb-dropdown-item tb-text-muted"
+                >{{ ResHolder.app.Text('GoToCustomerArea', 'Go To Customer Area') }}</a>
+                <a
+                    v-if="ViewModel.SignedIn"
+                    class="tb-dropdown-item tb-text-muted tb-text-smaller"
+                >
+                    <span>{{ ResHolder.SignInStatusLabel }}</span>&nbsp;<span
+                        class="tb-text-em"
+                    >{{ ResHolder.SignInDisplayName }}</span>
+                </a>
+                <div
+                    v-if="ViewModel.SignedIn"
+                    class="tb-dropdown-divider"
+                ></div>
+                <a
+                    v-if="ViewModel.SignedIn"
+                    href="https://www.tobook.com/CustomerArea/index.html"
+                    class="tb-dropdown-item tb-text-muted"
+                >{{ ResHolder.app.Text('ViewProfile', 'View Profile') }}</a>
+                <div
+                    v-if="ViewModel.SignedIn"
+                    class="tb-dropdown-divider"
+                ></div>
+                <a
+                    v-if="ViewModel.SignedIn"
+                    class="tb-dropdown-item tb-text-muted tb-text-em"
+                    v-on:click="VueSignInOut()"
+                >{{ ResHolder.app.Text('SignOut', 'Sign Out') }}</a>
+            </div>
+        </div>
+    </div>
+    <div
+        class="row"
+    >
+        <div class="col-12">
+            <div
+                class="row tb-padding-top-smaller"
+            >
+                <div class="col-6 tb-text-muted tb-col-padding-slimmer tb-text-small">
+                    <span
+                        v-if="GuestDetails.ml" 
+                    >{{ GuestDetails.ml.Text('CheckIn', 'Check-in') }}</span>:&nbsp;<span
+                        class="tb-text-em"
+                    >{{ Cart.ArrDisplay }}</span>
+                </div>
+                <div class="col-6 tb-text-muted tb-right tb-col-padding-slimmer tb-text-small">
+                    <span
+                        v-if="GuestDetails.ml"
+                    >{{ GuestDetails.ml.Text('CheckOut', 'Check-out') }}</span>:&nbsp;<span
+                        class="tb-text-em"
+                    >{{ Cart.DepDisplay }}</span>
+                </div>
+            </div>
+            <template v-for="offer in Cart.SelectedOffers">
+                <div class="tb-search-divider-slim"></div>
+                <div class="row tb-valign-center tb-padding-vertical-small">
+                    <div class="col-1 col-sm-1 order-sm-0 tb-col-padding-slimmer">
+                        <div class="tb-col-content-center">
+                            <img
+                                v-bind:src="offer.NumPersonsIcon"
+                                v-bind:width="offer.NumPersonsIconWidth"
+                                v-bind:id="offer.MaxPersonsHintID"
+                                v-bind:title="offer.UsageReductionName"
+                                height="12"
+                                class="tb-nudge-up-small"
+                            />
+                        </div>
+                    </div>
+                    <div
+                        v-cloak
+                        class="col-11 col-sm-6 col-md-7 col-lg-8 order-sm-1 tb-col-padding-slimmer tb-text-medium"
+                    >
+                        {{ offer.CartDescription }}
+                        ({{ offer.OfferTypeName }})
+                    </div>
+                    <div class="col-2 col-sm-2 col-md-1 order-sm-3 tb-col-padding-slimmer">
+                        <div class="tb-col-content-center tb-mobile-hide">
+                            <a
+                                v-bind:id="offer.InfoID"
+                                v-on:click="VueShowOfferHint(offer)"
+                                class="tb-info-button"
+                            >&nbsp;&nbsp;<span
+                                class="fa fa-info-circle"
+                            ></span>&nbsp;&nbsp;</a>
+                        </div>
+                    </div>
+                    <div class="col-10 col-sm-3 col-lg-2 order-sm-2 tb-right tb-col-padding-slim tb-text-medium">
+                        <div
+                            v-cloak
+                            v-if="!((offer.Offer.NumDiscountDays > 0) && (Cart.AllowDiscounts))"
+                            class="tb-col-content-right"
+                        >{{ offer.PriceInclusiveDisplay }}</div>
+                        <div
+                            v-cloak
+                            v-if="((offer.Offer.NumDiscountDays > 0) && (Cart.AllowDiscounts))"
+                            class="tb-col-content-right"
+                        >{{ offer.DiscountInclusiveDisplay }}</div>
+                    </div>
+                </div>
+            </template>
+            <div class="tb-search-divider-slim"></div>
+            <div
+                class="row"
+                v-if="Cart.HasCityTax"
+            >
+                <div class="col-12 tb-right tb-col-padding-slimmer tb-city-tax-display tb-text-medium">
+                    (<span>{{ GuestDetails.ml.Text('Inclusive', 'inclusive') }}</span>
+                    {{ Cart.TotalCityTaxDisplay }}
+                    <span>{{ GuestDetails.ml.Text('CityTax', 'city tax') }}</span>)
+                </div>
+            </div>
+            <div
+                class="tb-search-divider-slim"
+                v-if="Cart.HasCityTax"
+            ></div>
+            <div
+                class="row"
+                v-if="(Cart.UserCurrencyLabel != Cart.HotelCurrencyLabel)"
+            >
+                <div class="col-12 col-md-9 tb-col-padding-slimmer">
+                    <span class="tb-text-em"><span>{{ Confirmation.ml.Text('Note', 'Note') }}</span>:</span>
+                    <span>{{ Confirmation.ml.Text('TotalWillBeLiable', 'total amount will be liable in the property\'s own currency') }}</span>
+                    <span class="tb-text-em">{{ Cart.HotelCurrencyLabel }}</span>
+                </div>
+                <div class="col-12 col-md-3 tb-right tb-col-padding-slimmer tb-text-em tb-text-large">
+                    {{ Cart.TotalInclusiveHotelCurrencyDisplay }}
+                </div>
+            </div>
+            <div
+                v-if="(Cart.UserCurrencyLabel != Cart.HotelCurrencyLabel)"
+                class="tb-search-divider-slim"
+            ></div>
+            <div
+                v-if="((Cart.AllowDiscounts) && (Cart.TotalDiscountDays > 0))"
+                class="row tb-valign-center tb-padding-vertical-small"
+            >
+                <div
+                    class="col-12 tb-col-padding-slimmer"
+                >
+                    <span
+                        class="tb-text-warning tb-text-em"
+                    >{{ Confirmation.ml.Text('PriceIncludesMemberDiscount', 'Price includes member discount') }}</span>
+                </div>
+            </div>
+            <div
+                v-if="Cart.ListHasWalkIns"
+                class="tb-search-divider-slim"
+            ></div>
+            <div
+                v-if="Cart.ListHasWalkIns"
+                class="row"
+            >
+                <div
+                    class="col-12 tb-col-padding-slimmer"
+                >
+                    <span
+                        v-if="Confirmation.ml"
+                        class="tb-text-warning tb-text-em"
+                    >{{ Confirmation.ml.Text('BookingContainsWalkIn', 'NOTE: This booking contains walk-in') }}</span>
+                </div>
+            </div>
+            <div
+                v-if="((Cart.AllowDiscounts) && (Cart.TotalDiscountDays > 0))"
+                class="tb-search-divider-slim"
+            ></div>
+            <div class="row">
+                <div class="col-7 col-md-4 order-md-1 tb-col-padding-slimmer">
+                    <div
+                        class="tb-text-larger tb-float-left"
+                        v-bind:class="{ 'tb-icon-alert': Cart.BookingIsNonRefundable, 'tb-icon-ok': Cart.BookingIsCancellable }"
+                    ><span
+                        class="fa"
+                        v-bind:class="{ 'fa-credit-card': Cart.BookingIsNonRefundable, 'fa-check': Cart.BookingIsCancellable }"
+                    ></span></div>
+                    <div
+                        class="tb-padding-top-small tb-text-em"
+                        v-bind:class="{ 'tb-text-alert': Cart.BookingIsNonRefundable, 'tb-text-ok': Cart.BookingIsCancellable }"
+                    >&nbsp;&nbsp;{{ Cart.BookingPaymentSchemeName }}</div>
+                </div>
+                <div class="col-5 col-md-4 order-md-2 tb-right tb-col-padding-slimmer tb-text-em tb-text-large">
+                    {{ Cart.TotalInclusiveDisplay }}
+                </div>
+                <div class="col-12 col-md-4 order-md-0 tb-col-padding-slimmer">
+                    <button
+                        onclick="ConfirmBooking(event)"
+                        class="tb-button-full tb-action-button"
+                        id="NavActionButton"
+                    ><span
+                        class="tb-text-em"
+                        id="NavActionLabel"
+                    >{{ CCDetails.ConfirmationAction }}</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div
+    class="container-fluid tb-navbar-plain tb-cart-font"
+    id="resultVue"
+    style="display: none"
+>
+    <div class="tb-search-divider-slim"></div>
+    <template v-if="Confirmation.ConfirmOK">
+        <div class="row tb-padding-vertical-medium tb-valign-center">
+            <div class="col-1 tb-col-padding-slimmer">
+                <span
+                    class="fa fa-check tb-text-large tb-icon-ok"
+                ></span>
+            </div>
+            <div
+                class="col-11 tb-col-padding-slimmer tb-text-ok"
+            >
+                {{ Confirmation.ConfirmationLabel }}
+            </div>
+        </div>
+        <div class="tb-search-divider-slim"></div>
+        <div class="row tb-padding-vertical-medium tb-valign-center">
+            <div class="col-12 tb-col-padding-slimmer tb-text-medium">
+                <span>{{ Confirmation.NumberTypeLabel }}</span>:
+                <span
+                    class="tb-text-em"
+                >{{ Confirmation.ReservationNumber }}</span>
+            </div>
+        </div>
+        <div class="tb-search-divider-slim"></div>
+        <div
+            v-if="Confirmation.EmailSentOK"
+            class="row tb-padding-vertical-medium tb-valign-center"
+         >
+            <div class="col-12 tb-col-padding-slimmer tb-text-medium">
+                <span>{{ Confirmation.MailSentLabel }}</span>:
+                <span
+                    class="tb-text-email"
+                >{{ Confirmation.ResHolder.Email }}</span>
+            </div>
+        </div>
+        <div
+            v-if="Confirmation.EmailSendingFailed"
+            class="row tb-padding-vertical-medium tb-valign-center"
+        >
+            <div class="col-1 tb-col-padding-slimmer">
+                <span
+                    class="fa fa-alert tb-text-large tb-icon-alert"
+                ></span>
+            </div>
+            <div class="col-11 tb-col-padding-slimmer tb-text-medium">
+                <span
+                    v-if="Confirmation.ml"
+                >{{ Confirmation.ml.Text('CouldntSendSummary', 'Couldn\'t send a summary to') }}</span>:
+                <span
+                    class="tb-text-email"
+                >{{ Confirmation.ResHolder.Email }}</span>
+            </div>
+        </div>
+        <div
+            v-if="Confirmation.EmailSendingFailed"
+            class="row tb-padding-vertical-medium tb-valign-center"
+        >
+            <div
+                v-if="Confirmation.ml"
+                class="col-12 tb-text-medium tb-col-padding-slimmer"
+            >
+                {{ Confirmation.ml.Text('PleaseContactHotel', 'Please contact the Hotel') }}
+            </div>
+        </div>
+    </template>
+    <template v-if="Confirmation.ConfirmNotOK">
+        <div class="row tb-padding-vertical-medium tb-valign-center">
+            <div class="col-1 tb-col-padding-slimmer">
+                <span
+                    class="fa fa-remove tb-text-large tb-icon-warning"
+                ></span>
+            </div>
+            <div class="col-11 tb-col-padding-slimmer tb-text-warning">
+                {{ Confirmation.FailureLabel }}
+            </div>
+        </div>
+        <div class="tb-search-divider-slim"></div>
+        <div class="row tb-padding-vertical-medium tb-valign-center">
+            <div class="col-12 tb-col-padding-slimmer tb-text-medium">
+                {{ Confirmation.ErrorMessage }}
+            </div>
+        </div>
+    </template>
+</div>
+<div style="height: 10px;"></div>
+<div
+    class="container-fluid tb-cart-font"
+    id="guestDetailsVue"
+    v-cloak
+>
+    <form>
+        <div class="row tb-form-row">
+            <label
+                v-if="GuestDetails.ml"
+                for="FirstName"
+                class="col-12 col-md-3 col-form-label-md tb-text-muted tb-label tb-form-label tb-col-padding-slimmer tb-padding-top-small"
+            >{{ GuestDetails.ml.Text('FirstName', 'First Name') }}</label>
+            <div class="col-12 col-md-9 tb-col-padding-slimmer">
+                <input type="text" class="tb-form-control" id="FirstName"/>
+            </div>
+        </div>
+        <div class="row tb-form-row">
+            <label
+                v-if="GuestDetails.ml"
+                for="LastName"
+                class="col-12 col-md-3 col-form-label-md tb-text-muted tb-label tb-form-label tb-col-padding-slimmer tb-padding-top-small"
+            >{{ GuestDetails.ml.Text('LastName', 'Last Name') }}</label>
+            <div class="col-12 col-md-9 tb-col-padding-slimmer">
+                <input type="text" class="tb-form-control" id="LastName"/>
+            </div>
+        </div>
+        <div class="row tb-form-row">
+            <label
+                v-if="GuestDetails.ml"
+                for="CountryID"
+                class="col-12 col-md-3 col-form-label-md tb-text-muted tb-label tb-form-label tb-col-padding-slimmer tb-padding-top-small"
+            >{{ GuestDetails.ml.Text('Country', 'Country') }}</label>
+            <div class="col-12 col-md-9 tb-col-padding-slimmer">
+                <select
+                    class="tb-select tb-select-full tb-cart-font tb-text-medium"
+                    id="CountryID"
+                >
+                    <option style="display: none;" selected="selected" disabled="disabled" hidden="hidden" value="0"></option>
+                    <option
+                        v-for="country in GuestDetails.CountryList"
+                        v-bind:value="country.CountryID"
+                    >{{ country.Country }}</option>
+                </select>
+            </div>
+        </div>
+        <div class="row tb-form-row">
+            <label
+                v-if="GuestDetails.ml"
+                for="Email"
+                class="col-12 col-md-3 col-form-label-md tb-text-muted tb-label tb-form-label tb-col-padding-slimmer tb-padding-top-small"
+            >{{ GuestDetails.ml.Text('Email', 'Email') }}</label>
+            <div class="col-12 col-md-9 tb-col-padding-slimmer">
+                <input type="email" class="tb-form-control" id="Email"/>
+            </div>
+        </div>
+        <div class="row tb-form-row">
+            <label
+                v-if="GuestDetails.ml"
+                for="Mobile"
+                class="col-12 col-md-3 col-form-label-md tb-text-muted tb-label tb-form-label tb-col-padding-slimmer tb-padding-top-small"
+            >{{ GuestDetails.ml.Text('Mobile', 'Mobile') }}</label>
+            <div class="col-12 col-md-9 tb-col-padding-slimmer">
+                <input type="text" class="tb-form-control" id="Mobile"/>
+            </div>
+        </div>
+        <div class="row tb-form-row">
+            <div
+                class="col-12 help-block tb-text-muted tb-col-padding-slimmer tb-label tb-form-label"
+            >{{ CCDetails.PaymentPolicy }}</div>
+        </div>
+        <div class="row tb-form-row">
+            <label
+                v-if="CCDetails.ml"
+                for="CCTypeID"
+                class="col-12 col-md-3 col-form-label-md tb-text-muted tb-label tb-form-label tb-col-padding-slimmer tb-padding-top-small"
+            >{{ CCDetails.ml.Text('CCType', 'Credit Card Type') }}</label>
+            <div class="col-12 col-md-9 tb-col-padding-slimmer">
+                <select
+                    class="tb-select tb-select-full tb-cart-font tb-text-medium"
+                    id="CCTypeID"
+                >
+                    <option style="display: none;" selected="selected" disabled="disabled" hidden="hidden" value="0"></option>
+                    <option
+                        v-for="ccType in CCDetails.CCTypeList"
+                        v-bind:value="ccType.CCTypeID"
+                    >{{ ccType.CCType }}</option>
+                </select>
+            </div>
+        </div>
+        <div class="row tb-form-row">
+            <label
+                v-if="CCDetails.ml"
+                for="CCNumber"
+                class="col-12 col-md-3 col-form-label-md tb-text-muted tb-label tb-form-label tb-col-padding-slimmer tb-padding-top-small"
+            >{{ CCDetails.ml.Text('CCNumber', 'Credit Card Number') }}</label>
+            <div class="col-12 col-md-9 tb-col-padding-slimmer">
+                <input type="text" class="tb-form-control" id="CCNumber"/>
+            </div>
+        </div>
+        <div class="row tb-form-row">
+            <label
+                v-if="CCDetails.ml"
+                for="CCName"
+                class="col-12 col-md-3 col-form-label-md tb-text-muted tb-label tb-form-label tb-col-padding-slimmer tb-padding-top-small"
+            >{{ CCDetails.ml.Text('CCName', 'Name on Card') }}</label>
+            <div class="col-12 col-md-9 tb-col-padding-slimmer">
+                <input type="text" class="tb-form-control" id="CCName"/>
+            </div>
+        </div>
+        <div class="row tb-form-row">
+            <label
+                v-if="CCDetails.ml"
+                for="CCExpiryMonth"
+                class="col-12 col-md-3 col-form-label-md tb-text-muted tb-label tb-form-label tb-col-padding-slimmer tb-padding-top-small"
+            >{{ CCDetails.ml.Text('ExpiryMonth', 'Expiry Month') }}</label>
+            <div class="col-12 col-md-9 tb-col-padding-slimmer">
+                <select
+                    class="tb-select tb-cart-font tb-text-medium"
+                    id="CCExpiryMonth"
+                >
+                    <option style="display: none;" selected="selected" disabled="disabled" hidden="hidden" value="0"></option>
+                    <option
+                        v-for="month in CCDetails.CCExpiryMonths"
+                        v-bind:value="month.Month"
+                    >{{ month.Display }}</option>
+                </select>
+            </div>
+        </div>
+        <div class="row tb-form-row">
+            <label
+                v-if="CCDetails.ml"
+                for="CCExpiryYear"
+                class="col-12 col-md-3 col-form-label-md tb-text-muted tb-label tb-form-label tb-col-padding-slimmer tb-padding-top-small"
+            >{{ CCDetails.ml.Text('ExpiryYear', 'Expiry Year') }}</label>
+            <div class="col-12 col-md-9 tb-col-padding-slimmer">
+                <select
+                    class="tb-select tb-cart-font tb-text-medium"
+                    id="CCExpiryYear"
+                >
+                    <option style="display: none;" selected="selected" disabled="disabled" hidden="hidden" value="0"></option>
+                    <option
+                        v-for="year in CCDetails.CCExpiryYears"
+                        v-bind:value="year"
+                    >{{ year }}</option>
+                </select>
+            </div>
+        </div>
+        <div v-if="GuestDetails.ResHolder.CVCRequired" class="row tb-form-row">
+            <label
+                v-if="CCDetails.ml"
+                for="CCCVC"
+                class="col-12 col-md-3 col-form-label-md tb-text-muted tb-label tb-form-label tb-col-padding-slimmer tb-padding-top-small"
+            >{{ CCDetails.ml.Text('CCCVC', 'CVC Code') }}</label>
+            <div class="col-12 col-md-9 tb-col-padding-slimmer">
+                <input type="text" class="tb-form-control tb-short-input" id="CCCVC"/>
+            </div>
+        </div>
+        <div class="row tb-form-row">
+            <label
+                v-if="GuestDetails.ml"
+                for="GuestComments"
+                class="col-12 col-md-3 col-form-label-md tb-text-muted tb-label tb-form-label tb-col-padding-slimmer tb-padding-top-small"
+            >{{ GuestDetails.ml.Text('BookingComments', 'Booking Comments') }}</label>
+            <div class="col-12 col-md-9 tb-col-padding-slimmer">
+                <textarea class="tb-form-control" rows="3" id="GuestComments"></textarea>
+            </div>
+        </div>
+        <div class="row tb-form-row">
+            <div class="col-12 tb-col-padding-slimmer tb-center">
+                <button
+                    class="tb-button-full tb-action-button tb-large-action-button"
+                    onclick="ConfirmBooking(event)"
+                ><span
+                    class="tb-text-em"
+                >{{ CCDetails.ConfirmationAction }}</span></button>
+            </div>
+        </div>
+    </form>
+</div>
+<div style="height: 10px;"></div>
+<div
+    id="formContentVue"
+    class="container-fluid tb-cart-font"
+    style="display: none"
+>
+    <div class="col-12 tb-col-padding-none">
+        <div
+            v-if="Confirmation.ResHolder.HasGuestComments"
+            class="row tb-padding-vertical-medium"
+        >
+            <div class="col-12 tb-col-padding-slimmer">
+                <span v-if="Confirmation.ml">{{ Confirmation.ml.Text('BookingComments', 'Booking Comments') }}</span>:
+                <span
+                    class="tb-text-em"
+                >{{ Confirmation.ResHolder.GuestComments }}</span>
+            </div>
+        </div>
+        <template v-for="offer in Confirmation.Cart.SelectedOffers">
+            <div class="row tb-padding-vertical-medium">
+                <div class="col-12 tb-col-padding-slimmer">
+                    <span
+                        class="tb-text-em tb-text-heavy"
+                    >{{ offer.CartDescription }}</span>
+                    <span v-if="Confirmation.ml">{{ Confirmation.ml.Text('For', 'for') }}</span>
+                    {{ offer.NumNights }}
+                    <span v-if="Confirmation.ml">{{ Confirmation.ml.Text('Nights', 'night(s)') }}</span>
+                </div>
+            </div>
+            <div class="row tb-padding-vertical-medium">
+                <div class="col-12 tb-col-padding-slimmer">
+                    {{ offer.OfferTypeName }}, {{ offer.UsageReductionName }}
+                </div>
+            </div>
+            <div class="row tb-padding-vertical-medium">
+                <div class="col-4 col-md-3 tb-col-padding-slimmer">
+                    <span v-if="Confirmation.ml">{{ Confirmation.ml.Text('CheckIn', 'Check-in') }}</span>:
+                </div>
+                <div class="col-8 col-md-9 tb-col-padding-slimmer">
+                    {{ offer.ArrDisplay }}
+                </div>
+            </div>
+            <div class="row tb-padding-vertical-medium">
+                <div class="col-4 col-md-3 tb-col-padding-slimmer">
+                    <span v-if="Confirmation.ml">{{ Confirmation.ml.Text('CheckOut', 'Check-out') }}</span>:
+                </div>
+                <div class="col-8 col-md-9 tb-col-padding-slimmer">
+                    {{ offer.DepDisplay }}
+                </div>
+            </div>
+            <div class="row tb-padding-vertical-medium">
+                <div
+                    class="col-12 tb-col-padding-slimmer tb-right tb-text-large"
+                >
+                    <span v-if="Confirmation.ml">{{ Confirmation.ml.Text('Price', 'Price') }}</span>:
+                    <span
+                        class="tb-text-heavy tb-text-em"
+                    >{{ (((Confirmation.Cart.AllowDiscounts) && (offer.Offer.NumDiscountDays > 0)) ? offer.DiscountInclusiveDisplay : offer.PriceInclusiveDisplay) }}</span>
+                </div>
+            </div>
+            <div
+                v-if="offer.HasCityTax"
+                class="row"
+            >
+                <div
+                    class="col-12 tb-col-padding-slimmer tb-right tb-text-small tb-text-light"
+                >
+                    (<span v-if="Confirmation.ml">{{ Confirmation.ml.Text('Inclusive', 'inclusive') }}</span>
+                    {{ (((Confirmation.Cart.AllowDiscounts) && (offer.Offer.NumDiscountDays > 0)) ? offer.CityTaxDiscountDisplay : offer.CityTaxDisplay) }}
+                    <span v-if="Confirmation.ml">{{ Confirmation.ml.Text('CityTax', 'city tax') }}</span>)
+                </div>
+            </div>
+        </template>
+        <template v-if="Confirmation.Cart.HasMultipleSelections">
+            <div class="row tb-padding-vertical-medium">
+                <div
+                    class="col-12 tb-col-padding-slimmer tb-right tb-text-larger"
+                >
+                    <span v-if="Confirmation.ml">{{ Confirmation.ml.Text('TotalPrice', 'Total Price') }}</span>:
+                    <span
+                        class="tb-text-heavy tb-text-em"
+                    >{{ Confirmation.Cart.TotalInclusiveDisplay }}</span>
+                </div>
+            </div>
+            <div
+                v-if="Confirmation.Cart.HasCityTax"
+                class="row"
+            >
+                <div
+                    class="col-12 tb-col-padding-slimmer tb-right tb-text-light"
+                >
+                    (<span v-if="Confirmation.ml">{{ Confirmation.ml.Text('Inclusive', 'inclusive') }}</span>
+                    {{ Confirmation.Cart.TotalCityTaxDisplay }}
+                    <span>{{ Confirmation.ml.Text('CityTax', 'city tax') }}</span>)
+                </div>
+            </div>
+        </template>
+        <div class="row tb-padding-vertical-medium">
+            <div class="col-12 tb-col-padding-slimmer tb-text-em tb-text-heavy">
+                <span
+                    v-if="Confirmation.ml"
+                >{{ Confirmation.ml.Text('GuestDetails', 'Guest Details') }}</span>:
+            </div>
+        </div>
+        <div class="row tb-padding-vertical-medium">
+            <div class="col-4 col-md-3 tb-col-padding-slimmer">
+                <span
+                    v-if="Confirmation.ml"
+                >{{ Confirmation.ml.Text('Name', 'Name') }}</span>:
+            </div>
+            <div class="col-8 col-md-9 tb-col-padding-slimmer">
+                {{ Confirmation.ResHolder.FirstName }}
+                {{ Confirmation.ResHolder.LastName }}
+            </div>
+        </div>
+        <div class="row tb-padding-vertical-medium">
+            <div class="col-4 col-md-3 tb-col-padding-slimmer">
+                <span
+                    v-if="Confirmation.ml"
+                >{{ Confirmation.ml.Text('Country', 'Country') }}</span>:
+            </div>
+            <div class="col-8 col-md-9 tb-col-padding-slimmer">
+                {{ Confirmation.ResHolder.Country }}
+            </div>
+        </div>
+        <div class="row tb-padding-vertical-medium">
+            <div class="col-4 col-md-3 tb-col-padding-slimmer">
+                <span
+                    v-if="Confirmation.ml"
+                >{{ Confirmation.ml.Text('Email', 'Email') }}</span>:
+            </div>
+            <div class="col-8 col-md-9 tb-col-padding-slimmer">
+                {{ Confirmation.ResHolder.Email }}
+            </div>
+        </div>
+        <div class="row tb-padding-vertical-medium">
+            <div class="col-4 col-md-3 tb-col-padding-slimmer">
+                <span
+                    v-if="Confirmation.ml"
+                >{{ Confirmation.ml.Text('Mobile', 'Mobile') }}</span>:
+            </div>
+            <div class="col-8 col-md-9 tb-col-padding-slimmer">
+                {{ Confirmation.ResHolder.Mobile }}
+            </div>
+        </div>
+        <div class="row tb-padding-vertical-medium">
+            <div class="col-4 col-md-3 tb-col-padding-slimmer">
+                <span
+                    v-if="Confirmation.ml"
+                >{{ Confirmation.ml.Text('CreditCard', 'Credit Card') }}</span>:
+            </div>
+            <div class="col-8 col-md-9 tb-col-padding-slimmer">
+                {{ Confirmation.ResHolder.CCType }}
+            </div>
+        </div>
+        <div class="row tb-padding-vertical-medium">
+            <div class="col-4 col-md-3 tb-col-padding-slimmer">
+                <span
+                    v-if="Confirmation.ml"
+                >{{ Confirmation.ml.Text('CardHolder', 'Card Holder') }}</span>:
+            </div>
+            <div class="col-8 col-md-9 tb-col-padding-slimmer">
+                {{ Confirmation.ResHolder.CCName }}
+            </div>
+        </div>
+        <div class="row tb-padding-vertical-medium">
+            <div class="col-12 tb-col-content-center">
+                <button
+                    onclick="BackToSearch()"
+                    class="tb-button-full tb-action-button tb-large-action-button"
+                    id="FooterActionButton"
+                ><span
+                    class="tb-text-em"
+                    id="FooterActionLabel"
+                >{{ Confirmation.ActionLabel }}</span></button>
+            </div>
+        </div>
+    </div>
+</div>
+

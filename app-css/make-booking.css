@@ -1,0 +1,138 @@
+﻿/* text utility  */
+.tb-text-small {
+    font-size: 0.9em;
+}
+
+.tb-text-large {
+    font-size: 1.2em;
+}
+
+.tb-text-larger {
+    font-size: 1.4em;
+}
+
+.tb-text-medium {
+    color: #555555;
+}
+
+.tb-text-heavy {
+    color: #333333;
+}
+
+.tb-text-light {
+    color: darkgray;
+}
+
+.tb-text-email {
+    color:       cadetblue;
+    font-weight: bold;
+}
+
+.tb-city-tax-display {
+    font-size: 0.85em;
+}
+
+/* buttons */
+.tb-info-button {
+    background-color: #c5dbf2;
+    color:            #6c757d;
+    border:           2px solid #c5dbf2;
+    padding:          4px 0px !important;
+    text-transform:   none !important;
+    letter-spacing:   0 !important;
+    font-family:      "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+    box-shadow:       none !important;
+    cursor:           pointer !important;
+}
+
+.tb-info-button:hover,
+.tb-info-button:active,
+.tb-info-button:focus
+{
+    background-color: white;
+    color:            #6c757d;
+    border:           2px solid #c5dbf2;
+    padding:          4px 0px !important;
+}
+
+/* form */
+select.tb-select {
+    padding:     .5rem .75rem;
+    min-width:   150px;
+}
+
+.tb-select-full {
+    width: 100%;
+}
+
+.tb-short-input {
+    width: 150px !important;
+}
+
+.tb-large-action-button {
+    max-width: 700px;
+}
+
+/* navbar */
+.tb-search-divider-slim {
+    height:           1px;
+    margin-left:      -15px;
+    margin-right:     -15px;
+    background-color: darkslategrey;
+}
+
+/* layout utility */
+.tb-valign-center {
+    display:     flex;
+    align-items: center;
+}
+
+.tb-float-left {
+    float: left;
+}
+
+.tb-padding-vertical-medium {
+    padding-top:    8px;
+    padding-bottom: 8px;
+}
+
+.tb-padding-vertical-small {
+    padding-top:    2px;
+    padding-bottom: 2px;
+}
+
+.tb-padding-top-small {
+    padding-top: 6px;
+}
+
+.tb-padding-top-smaller {
+    padding-top: 4px;
+}
+
+.tb-col-content-center {
+    width:      100%;
+    text-align: center;
+}
+
+.tb-col-content-right {
+    width:      100%;
+    text-align: right;
+}
+
+/* media queries */
+@media screen and (min-width: 0px) and (max-width: 575.9999px) {
+    .tb-navbar-header-main { font-size: 1.2em; padding-top: 6px; }
+}
+
+@media screen and (min-width: 576px) {
+    .tb-navbar-header-main { font-size: 1.4em; padding-top: 6px; }
+}
+
+@media screen and (min-width: 0px) and (max-width: 767.9999px) {
+    .tb-form-label { font-size: 0.9em; font-weight: bold; }
+}
+
+@media screen and (min-width: 768px) {
+    .tb-form-label { font-size: 1em; font-weight: bold; }
+}
+

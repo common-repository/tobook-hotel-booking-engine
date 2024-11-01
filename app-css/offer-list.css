@@ -1,0 +1,176 @@
+﻿/* text utility  */
+.tb-text-ghost {
+    color: lightgray;
+}
+
+.tb-text-lastminute {
+    font-size: 0.8em;
+    color:     darkred;
+}
+
+.tb-text-lastminute-price {
+    font-size:       0.8em;
+    color:           darkred;
+    text-decoration: line-through;
+}
+
+/* buttons */
+a.tb-book-button:link,
+a.tb-book-button:visited
+{
+    background-color: #c5dbf2;
+    color:            #6c757d;
+    border:           2px solid #c5dbf2;
+    padding:          6px 8px;
+    text-align:       center;
+    text-decoration:  none !important;
+    box-shadow:       none !important;
+    display:          inline-block;
+}
+
+a.tb-book-button:hover,
+a.tb-book-button:active
+{
+    background-color: white;
+    color:            #6c757d;
+}
+
+.tb-remove-button {
+    background-color: #dc3545;
+    color:            white;
+    border:           2px solid #dc3545;
+    padding:          12px 0px !important;
+    text-transform:   none !important;
+    letter-spacing:   0 !important;
+    font-family:      "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+}
+
+.tb-remove-button:hover,
+.tb-remove-button:active,
+.tb-remove-button:focus
+{
+    background-color: white;
+    color:            #dc3545;
+    border:           2px solid #dc3545;
+    padding:          12px 0px !important;
+}
+
+.tb-button-disabled,
+.tb-button-disabled:hover
+{
+    background-color: #6c757d !important;
+    color:            white !important;
+    opacity:          0.6;
+    cursor:           not-allowed !important;
+    border:           2px solid #6c757d !important;
+    padding-left:     0 !important;
+    padding-right:    0 !important;
+    text-transform:   none !important;
+}
+
+/* cart summary  */
+.tb-cart-summary {
+    background: white;
+    border:     1px solid black;
+}
+
+.tb-cart-summary-desktop {
+    background: white;
+    border:     1px solid black;
+    min-height: 28px;
+}
+
+.tb-cart-summary-float {
+    min-height: 28px;
+}
+
+.tb-cart-summary-hide {
+    display: none !important;
+}
+
+.tb-cart-summary-show {
+    display: block !important;
+}
+
+.tb-cart-summary-divider-slim {
+    height:           1px;
+    margin-left:      -14px;
+    margin-right:     -8px;
+    background-color: lavender;
+}
+
+.tb-city-tax-display {
+    font-size: 0.75em;
+}
+
+.tb-link-explicit {
+    text-decoration: none !important;
+}
+
+.tb-link-large {
+    text-decoration: none !important;
+    font-size:       1.2em;
+    box-shadow:      none !important;
+}
+
+.tb-link-delete {
+    color:           darkred;
+}
+
+.tb-link-delete a a:link a:hover a:visited {
+    text-decoration: none !important;
+}
+
+/* offers */
+.tb-card {
+    border:        1px solid rgba(0,0,0,.125);
+    border-radius: .25rem;
+}
+
+.tb-offer-selected {
+    background-color: lavender;
+    border-color:     darkgreen;
+    border-width:     2px;
+}
+
+.tb-card-icon-min {
+    min-width: 26px;
+}
+
+.tb-main-price {
+    font-size: 1.1em;
+}
+
+.tb-card-info {
+    padding-top: 6px;
+    font-size:   1.0em;
+}
+
+.tb-name {
+    padding-top: 8px;
+    font-size:   0.9em;
+    font-weight: 600;
+}
+
+.tb-name-large {
+    padding-top: 8px;
+    font-weight: 600;
+}
+
+/* layout utility  */
+.tb-margin-auto {
+    margin: auto;
+}
+
+.tb-col-padding-right-slimmer {
+    padding-left:  0;
+    padding-right: 2px;
+}
+
+.tb-col-padding-slim-all {
+    padding-left:   6px;
+    padding-right:  6px;
+    padding-top:    0;
+    padding-bottom: 0;
+}
+

@@ -1,0 +1,20 @@
+/* datepicker dropdown font  */
+.daterangepicker select.monthselect, .daterangepicker select.yearselect {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size:   12px;
+    padding:     1px;
+    height:      auto;
+    margin:      0;
+    cursor:      default;
+}
+
+/* daterange picker icon */
+.tb-date-picker {
+    padding:               8px 10px;
+    line-height:           28px;
+    background-image:      url(https://www.tobook.com/img/calendar-alt-solid.png);
+    background-repeat:     no-repeat;
+    background-attachment: scroll;
+    background-position:   7px 11px;
+    padding-left:          32px;
+}

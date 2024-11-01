@@ -1,0 +1,67 @@
+<div
+    class="tb-modal"
+    id="modalLoading"
+>
+    <div class="tb-modal-content tb-cart-font">
+        <div class="tb-modal-body tb-text-medium" id="modalLoadingMessage">Loading</div>
+    </div>
+</div>
+<div
+    class="tb-modal"
+    id="modalSignIn"
+>
+    <div
+        class="tb-modal-content tb-cart-font"
+        id="signInVue"
+        v-cloak
+    >
+        <div class="tb-modal-header">
+            <h5
+                class="tb-modal-header-title tb-text-muted tb-text-em"
+                v-if="ResHolder.app"
+            >{{ ResHolder.app.Text('SignIn', 'Sign In') }}</h5>
+        </div>
+        <div class="tb-modal-body tb-text-medium">
+            <form v-if="ResHolder.app">
+                <div class="tb-form-row">
+                    <label for="signInEmail">{{ ResHolder.app.Text('EmailAddress', 'Email Address') }}</label>
+                    <input
+                        type="email"
+                        class="tb-form-control"
+                        id="signInEmail"
+                        v-bind:placeholder="ResHolder.app.Text('Email', 'Email')"
+                        v-model="ResHolder.Email"
+                    />
+                </div>
+                <div class="tb-form-row">
+                    <label for="signInPassword">{{ ResHolder.app.Text('Password', 'Password') }}</label>
+                    <input
+                        type="password"
+                        class="tb-form-control"
+                        id="signInPassword"
+                        v-bind:placeholder="ResHolder.app.Text('Password', 'Password')"
+                        v-model="CustomerCredentials"
+                        v-on:keyup.enter="VueSignIn()"
+                    />
+                </div>
+                <div class="tb-form-row tb-text-warning">{{ LoginError }}</div>
+            </form>
+        </div>
+        <div
+            class="tb-modal-footer"
+            v-if="ResHolder.app"
+        >
+            <button
+                type="button"
+                class="tb-default-button tb-modal-button-small"
+                v-on:click="VueSignInCancel()"
+            >{{ ResHolder.app.Text('Cancel', 'Cancel') }}</button>
+            <button
+                type="button"
+                class="tb-action-button tb-modal-ok tb-action-button-large"
+                id="modalSignInAction"
+                v-on:click="VueSignIn()"
+            >{{ ResHolder.app.Text('SignIn', 'Sign In') }}</button>
+        </div>
+    </div>
+</div>
